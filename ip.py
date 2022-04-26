@@ -1,8 +1,5 @@
 from tkinter import *
-import urllib.request
-import json
-import os
-import sys
+import urllib.request , json , os , sys , platform
 from datetime import datetime
 
 def restart():
@@ -28,27 +25,34 @@ def search_results():
 	root2 = Tk()
 	req_ip = urllib.request.urlopen('http://ip-api.com/json/' + search_box.get())
 	req_ip_json = json.loads(req_ip.read())
-	query = Label(root2 , text='Requested IP: '+req_ip_json['query']).pack()
-	status = Label(root2, text='Search status: '+req_ip_json['status']).pack()
-	country = Label(root2,text='Country: '+req_ip_json['country']).pack()
-	countrycode = Label(root2,text=req_ip_json['countryCode']).pack()
-	region = Label(root2, text='Region: '+req_ip_json['region']).pack()
-	regionaname = Label(root2,text='Region Name: ' + req_ip_json['regionName']).pack()
-	city = Label(root2,text='City: '+req_ip_json['city']).pack()
-	zip = Label(root2,text='Zip: ' + req_ip_json['zip']).pack()
-	lat = Label(root2, text='latitude: '+str(req_ip_json['lat'])).pack()
-	lon = Label(root2,text='longitude: '+str(req_ip_json['lon'])).pack()
-	timezone = Label(root2,text='Timezone: '+str(req_ip_json['timezone'])).pack()
-	isp = Label(root2,text='ISP: '+req_ip_json['isp']).pack()
-	org = Label(root2,text='Organisation: '+req_ip_json['org']).pack()
-	As = Label(root2,text=req_ip_json['as']).pack()
-	close_button = Button(root2, text="Close", command=root2.destroy).pack()
+	Label(root2 , text='Requested IP: '+req_ip_json['query']).pack()
+	Label(root2, text='Search status: '+req_ip_json['status']).pack()
+	Label(root2,text='Country: '+req_ip_json['country']).pack()
+	Label(root2,text=req_ip_json['countryCode']).pack()
+	Label(root2, text='Region: '+req_ip_json['region']).pack()
+	Label(root2,text='Region Name: ' + req_ip_json['regionName']).pack()
+	Label(root2,text='City: '+req_ip_json['city']).pack()
+	Label(root2,text='Zip: ' + req_ip_json['zip']).pack()
+	Label(root2, text='latitude: '+str(req_ip_json['lat'])).pack()
+	Label(root2,text='longitude: '+str(req_ip_json['lon'])).pack()
+	Label(root2,text='Timezone: '+str(req_ip_json['timezone'])).pack()
+	Label(root2,text='ISP: '+req_ip_json['isp']).pack()
+	Label(root2,text='Organisation: '+req_ip_json['org']).pack()
+	Label(root2,text=req_ip_json['as']).pack()
+	Button(root2, text="Close", command=root2.destroy).pack()
 	root2.mainloop()
 
 def clear_history():
-    history = open('.history.txt','w')
-    history.write('')
-    history.close()
+    if platform.system() == 'Windows':
+        os.system("attrib -h .history.txt")
+        history = open('.history.txt','w')
+        history.write('')
+        history.close()
+        os.system("attrib +h .history.txt")
+    else:
+        history = open('.history.txt','w')
+        history.write('')
+        history.close()
 
 try:
     user_ip = urllib.request.urlopen('https://api.ipify.org/?format=json')
@@ -57,12 +61,11 @@ try:
     user_ip_label = Label(main_menu,text= 'Your IP: ' + user_json_value['ip']).grid(row=0,column=0)
     search_box = Entry(main_menu,borderwidth=3)
     search_box.grid(row=1,column=0)
-    search_button = Button(main_menu,text='Search',command=make_history)
-    search_button.grid(row=1,column=1)
-    exit_button = Button(main_menu, text="Exit", command=main_menu.destroy).grid(column=2, row=2)
-    copy_button = Button(main_menu,text='Copy' ,command=main_menu.clipboard_append(user_json_value['ip'])).grid(row=0,column=1)
-    history_button = Button(main_menu,text='Clear History', command=clear_history).grid(column=1 , row=2)
-    history = Label(main_menu,text='History').grid(column=0,row=2)
+    Button(main_menu,text='Search',command=make_history).grid(row=1,column=1)
+    Button(main_menu, text="Exit", command=main_menu.destroy).grid(column=2, row=2)
+    Button(main_menu,text='Copy' ,command=main_menu.clipboard_append(user_json_value['ip'])).grid(row=0,column=1)
+    Button(main_menu,text='Clear History', command=clear_history).grid(column=1 , row=2)
+    Label(main_menu,text='History').grid(column=0,row=2)
     try:
         list = open('.history.txt','r')
         Label(main_menu , text=list.read()).grid(column=0 , row=3)
@@ -70,11 +73,15 @@ try:
     except:
         create = open('.history.txt','a')
         create.close()
+        if platform.system() == 'Windows':
+            os.system("attrib +h .history.txt")
+    main_menu.title('Main Menu')
     main_menu.mainloop()
 
 except:
     internet_error = Tk()
-    error = Label(internet_error,text='Check Your Internet Connection!').pack()
-    exit_button = Button(internet_error,text='Close',command=internet_error.destroy).pack()
-    restart_button = Button(internet_error,text='Restart',command=restart).pack()
+    Label(internet_error,text='Check Your Internet Connection!').pack()
+    Button(internet_error,text='Close',command=internet_error.destroy).pack()
+    Button(internet_error,text='Restart',command=restart).pack()
+    internet_error.title('Error!')
     internet_error.mainloop()
