@@ -48,7 +48,13 @@ def clear_history():
         history = open('.history.txt','w')
         history.write('')
         history.close()
+        file_name = sys.argv[0]
+        main_menu.destroy()
         os.system("attrib +h .history.txt")
+        try:
+            os.system('python '+ file_name)
+        except:
+            os.system('python3 '+ file_name)
     else:
         history = open('.history.txt','w')
         history.write('')
