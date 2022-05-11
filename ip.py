@@ -1,10 +1,14 @@
+from json.tool import main
 from tkinter import *
 import urllib.request , json , os , sys , platform
 from datetime import datetime
 
-def restart():
+def restart(window):
     file_name = sys.argv[0]
-    internet_error.destroy()
+    if window == 'internet_error':
+        internet_error.destroy()
+    elif window == 'main_menu':
+        main_menu.destroy()
     try:
         try:
             os.system('python '+ file_name)
@@ -48,13 +52,7 @@ def clear_history():
         history = open('.history.txt','w')
         history.write('')
         history.close()
-        file_name = sys.argv[0]
-        main_menu.destroy()
-        os.system("attrib +h .history.txt")
-        try:
-            os.system('python '+ file_name)
-        except:
-            os.system('python3 '+ file_name)
+        restart('main_menu')
     else:
         history = open('.history.txt','w')
         history.write('')
@@ -88,6 +86,6 @@ except:
     internet_error = Tk()
     Label(internet_error,text='Check Your Internet Connection!').pack()
     Button(internet_error,text='Close',command=internet_error.destroy).pack()
-    Button(internet_error,text='Restart',command=restart).pack()
+    Button(internet_error,text='Restart',command=restart('internet_error')).pack()
     internet_error.title('Error!')
     internet_error.mainloop()
