@@ -23,6 +23,8 @@ def make_history():
     his_file = open('.history.txt','a')
     his_file.write(dt_string + ' - ' + search_box.get() + '\n')
     his_file.close()
+    if platform.system() == 'Windows':
+        os.system("attrib +h .history.txt")
     search_results()
 
 def search_results():
@@ -31,8 +33,8 @@ def search_results():
 	req_ip_json = json.loads(req_ip.read())
 	Label(root2 , text='Requested IP: '+req_ip_json['query']).pack()
 	Label(root2, text='Search status: '+req_ip_json['status']).pack()
-	Label(root2,text='Country: '+req_ip_json['country']).pack()
-	Label(root2,text=req_ip_json['countryCode']).pack()
+	Label(root2,text='Country: '+ req_ip_json['country']).pack()
+	Label(root2,text='Country code: ' + req_ip_json['countryCode']).pack()
 	Label(root2, text='Region: '+req_ip_json['region']).pack()
 	Label(root2,text='Region Name: ' + req_ip_json['regionName']).pack()
 	Label(root2,text='City: '+req_ip_json['city']).pack()
@@ -66,7 +68,7 @@ try:
     search_box = Entry(main_menu,borderwidth=3)
     search_box.grid(row=1,column=0)
     Button(main_menu,text='Search',command=make_history).grid(row=1,column=1)
-    Button(main_menu, text="Exit", command=main_menu.destroy).grid(column=2, row=2)
+    Button(main_menu, text="Exit", command=main_menu.destroy).grid(column=1, row=4)
     Button(main_menu,text='Copy' ,command=main_menu.clipboard_append(user_json_value['ip'])).grid(row=0,column=1)
     Button(main_menu,text='Clear History', command=clear_history).grid(column=1 , row=2)
     Label(main_menu,text='History').grid(column=0,row=2)
