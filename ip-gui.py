@@ -49,16 +49,25 @@ def search_results():
 	root2.mainloop()
 
 def clear_history():
-    if platform.system() == 'Windows':
-        os.system("attrib -h .history.txt")
-        history = open('.history.txt','w')
-        history.write('')
-        history.close()
-        restart('main_menu')
-    else:
-        history = open('.history.txt','w')
-        history.write('')
-        history.close()
+	hist_file = open(".history.txt","w")
+	hist_file.write("Searched History:")
+	hist_file.close()
+
+def show_history():
+    try:
+        list = open('.history.txt','r')
+    except:
+        create = open('.history.txt','a')
+        create.write("Searched History:")
+        create.close()
+        if platform.system() == 'Windows':
+            os.system("attrib +h .history.txt")
+        show_history()
+    history = Tk()
+    Label(history,text=list.read()).pack()
+    Button(history,text="Clear History",command=clear_history).pack()
+    Button(history,text="Exit",command=history.destroy).pack()
+    list.close()
 
 try:
     user_ip = urllib.request.urlopen('https://api.ipify.org/?format=json')
@@ -68,19 +77,9 @@ try:
     search_box = Entry(main_menu,borderwidth=3)
     search_box.grid(row=1,column=0)
     Button(main_menu,text='Search',command=make_history).grid(row=1,column=1)
-    Button(main_menu, text="Exit", command=main_menu.destroy).grid(column=1, row=4)
+    Button(main_menu, text="Exit", command=main_menu.destroy).grid(column=1, row=2)
     Button(main_menu,text='Copy' ,command=main_menu.clipboard_append(user_json_value['ip'])).grid(row=0,column=1)
-    Button(main_menu,text='Clear History', command=clear_history).grid(column=1 , row=2)
-    Label(main_menu,text='History').grid(column=0,row=2)
-    try:
-        list = open('.history.txt','r')
-        Label(main_menu , text=list.read()).grid(column=0 , row=3)
-        list.close()
-    except:
-        create = open('.history.txt','a')
-        create.close()
-        if platform.system() == 'Windows':
-            os.system("attrib +h .history.txt")
+    Button(main_menu,text='Show History', command=show_history).grid(column=0 , row=2)   
     main_menu.title('Main Menu')
     main_menu.mainloop()
 
